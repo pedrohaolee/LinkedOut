@@ -1,11 +1,11 @@
 const { body } = require("express-validator");
 
 const validateRegistrationData = [
-  body("email", "valid email is required").notEmpty().isEmail(),
-  body("password", "passwird us required").notEmpty(),
+  body("email", "email is required").notEmpty().isEmail(),
+  body("password", "password is required").notEmpty(),
   body(
     "password",
-    "password length min is 8 characters and max is 50 characters"
+    "password lenght min is 8 and max is 50 characters"
   ).isLength({ min: 8, max: 50 }),
 ];
 
@@ -15,11 +15,11 @@ const validateLoginData = [
 ];
 
 const validateRefreshToken = [
-  body("refresh", "valid refresh token is required").notEmpty().isJWT(),
+  body("refresh", "valid refresh token is requred").notEmpty().isJWT(),
 ];
 
 module.exports = {
+  validateRegistrationData,
   validateLoginData,
   validateRefreshToken,
-  validateRegistrationData,
 };

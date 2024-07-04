@@ -23,18 +23,17 @@ const register = async (req, res) => {
     if (auth) {
       return res.status(400).json({ status: "error", msg: "duplicate email" });
     }
+
     const hash = await bcrypt.hash(req.body.password, 12);
     await AuthModel.create({
       email: req.body.email,
       hash,
       role: req.body.role || "user",
-      //default is redundancy
     });
     res.json({ status: "ok", msg: "user created" });
   } catch (error) {
     console.error(error.message);
-    res.status(400).json({ status: "error", msg: "error registering" });
-    //good practice to put error status
+    res.status(400).json({ status: "error", msg: "invalid registration" });
   }
 };
 
@@ -42,17 +41,17 @@ const login = async (req, res) => {
   try {
     const auth = await AuthModel.findOne({ email: req.body.email });
     if (!auth) {
-      return res.status(401).json({ status: "error", msg: "not authorised" });
+      return res.status(401).json({ status: "error", msg: "not authorized" });
     }
+
     const result = await bcrypt.compare(req.body.password, auth.hash);
     if (!result) {
       console.log("email or password error");
       return res.status(401).json({ status: "error", msg: "login failed" });
     }
-    const claims = {
-      email: auth.email,
-      role: auth.role,
-    };
+
+    const claims = { email: auth.email, role: auth.role };
+
     const access = jwt.sign(claims, process.env.ACCESS_SECRET, {
       expiresIn: "20m",
       jwtid: uuidv4(),
@@ -73,16 +72,17 @@ const login = async (req, res) => {
 const refresh = async (req, res) => {
   try {
     const decoded = jwt.verify(req.body.refresh, process.env.REFRESH_SECRET);
-    //Checks if access token (true)
     const claims = { email: decoded.email, role: decoded.role };
+
     const access = jwt.sign(claims, process.env.ACCESS_SECRET, {
       expiresIn: "20m",
       jwtid: uuidv4(),
     });
+
     res.json({ access });
   } catch (error) {
     console.error(error.message);
-    res.status(400).json({ status: "error", msg: "refresh error" });
+    res.status(400).json({ status: "error", msg: "refresh failed" });
   }
 };
 

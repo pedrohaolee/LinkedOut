@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 const Registration = (props) => {
   const usingFetch = useFetch();
-  // const [roles, setRoles] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
@@ -16,11 +16,7 @@ const Registration = (props) => {
 
   const { mutate } = useMutation({
     mutationFn: async () => {
-      await usingFetch("/auth/register", "PUT", {
-        email,
-        password,
-        role,
-      });
+      await usingFetch("/auth/register", "PUT", { email, password, role });
     },
     onSuccess: () => props.setShowLogin(true),
   });
@@ -47,7 +43,7 @@ const Registration = (props) => {
         <input
           className="col-md-4"
           placeholder="password"
-          type="text"
+          type="password"
           value={password}
           onChange={(e) => {
             setPassword(e.target.value);
@@ -63,7 +59,9 @@ const Registration = (props) => {
           id="roles"
           className="col-md-4"
           value={role}
-          onChange={(e) => setRole(e.target.value)}
+          onChange={(e) => {
+            setRole(e.target.value);
+          }}
         >
           <option value="none">select</option>
           {data &&

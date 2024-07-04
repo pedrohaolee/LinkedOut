@@ -11,6 +11,7 @@ function App() {
   const [accessToken, setAccessToken] = useState("");
   const [role, setRole] = useState("");
   const [showLogin, setShowLogin] = useState(true);
+
   return (
     <QueryClientProvider client={queryClient}>
       <UserContext.Provider
@@ -18,7 +19,7 @@ function App() {
       >
         {!accessToken && showLogin && <Login setShowLogin={setShowLogin} />}
         {!accessToken && !showLogin && (
-          <Registration setShowLogin={setShowLogin} />
+          <Registration setShowLogin={setShowLogin}></Registration>
         )}
         {accessToken && <Display />}
       </UserContext.Provider>
