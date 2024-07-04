@@ -1,3 +1,4 @@
+const Books = require("../models/Books");
 const BooksModel = require("../models/Books");
 
 const seedBooks = async (req, res) => {
@@ -56,19 +57,37 @@ const getAllBooks = async (req, res) => {
     res.json(allBooks);
   } catch (error) {
     console.error(error.message);
-    res.json({ status: "error", msg: "error getting books" });
+    res.status(400).json({ status: "error", msg: "error getting books" });
   }
 };
 
 const getBookById = async (req, res) => {
   try {
-    const book = await BooksModel.findById(req.body.id);
+    // const book = await BooksModel.findById(req.body.id);
+    const book = await BooksModel.findOne({ _id: req.body.id });
+    // const book = await BooksModel.find({});
     res.json(book);
   } catch (error) {
     console.error(error.message);
-    res.json({ status: "error", msg: "error getting book" });
+    res.status(400).json({ status: "error", msg: "error getting books" });
   }
 };
+
+// const addNewBook = async (req, res) => {
+//   try {
+//     const newBook = {
+//       title: req.body.title,
+//       author: req.body.author,
+//       year_pbulished: req.body.year,
+//     };
+
+//     await BooksModel.create(newBook);
+//     res.json({ status: "ok", msg: "book saved" });
+//   } catch (error) {
+//     console.error(error.message);
+//     res.json({ status: "error", msg: "error saving books" });
+//   }
+// };
 
 const addNewBook = async (req, res) => {
   try {
@@ -77,57 +96,43 @@ const addNewBook = async (req, res) => {
       author: req.body.author,
       year_published: req.body.year,
     };
-    await BooksModel.create(newBook);
+
+    const newBookModel = new BooksModel(newBook);
+    await newBookModel.save();
+
     res.json({ status: "ok", msg: "book saved" });
   } catch (error) {
     console.error(error.message);
-    res.json({ status: "error", message: "error adding new book" });
+    res.status(400).json({ status: "error", msg: "error saving books" });
   }
 };
 
-// const addNewbook = async (req, res) => {
-//     try {
-//         const newBook = new BooksModel({
-//             title:req.body.title,
-//             author: req.body.author,
-//             year_published: req.body.year,
-//         })
-//         await newBook.save()
-
-//     }
-//     catch (error) {
-
-//     }
-// }
-
-const deleteBookById = async (req, res) => {
+const deleteOneBookById = async (req, res) => {
   try {
     await BooksModel.findByIdAndDelete(req.params.id);
     res.json({ status: "ok", msg: "book deleted" });
   } catch (error) {
     console.error(error.message);
-    res.json({ status: "error", msg: "error deleting book" });
+    res.status(400).json({ status: "error", msg: "error deleting book" });
   }
 };
 
 const updateOneBook = async (req, res) => {
   try {
-    const updateBook = {};
-    if ("title" in req.body) {
-      updateBook.title = req.body.title;
-    }
-    if ("author" in req.body) {
-      updateBook.author = req.body.author;
-    }
-    if ("year" in req.body) {
-      updateBook.year_published = req.body.year;
-    }
-
+    const updateBook = {
+      title: req.body.title,
+      author: req.body.author,
+      year_published: req.body.year,
+    };
+    // const updateBook = {};
+    // if ("title" in req.body) updateBook.title = req.body.title;
+    // if ("author" in req.body) updateBook.author = req.body.author;
+    // if ("year" in req.body) updateBook.year_published = req.body.year;
     await BooksModel.findByIdAndUpdate(req.params.id, updateBook);
     res.json({ status: "ok", msg: "book updated" });
   } catch (error) {
     console.error(error.message);
-    res.json({ status: "error", msg: "error updating book" });
+    res.status(400).json({ status: "error", msg: "error updating book" });
   }
 };
 
@@ -136,6 +141,6 @@ module.exports = {
   getAllBooks,
   getBookById,
   addNewBook,
-  deleteBookById,
+  deleteOneBookById,
   updateOneBook,
 };
