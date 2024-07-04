@@ -2,10 +2,10 @@ import React, { useContext, useState } from "react";
 import Book from "./Book";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
-import userContext from "../context/user";
+import UserContext from "../context/user";
 
 const Display = () => {
-  const userCtx = useContext(userContext);
+  const userCtx = useContext(UserContext);
   const queryClient = useQueryClient();
   const usingFetch = useFetch();
   const [title, setTitle] = useState("");
@@ -15,12 +15,7 @@ const Display = () => {
   const { isSuccess, isError, error, isFetching, data } = useQuery({
     queryKey: ["books"],
     queryFn: async () =>
-      await usingFetch(
-        "/api/books",
-        undefined, //methods
-        undefined, //body
-        userCtx.accessToken
-      ),
+      await usingFetch("/api/books", undefined, undefined, userCtx.accessToken),
   });
 
   const mutation = useMutation({
