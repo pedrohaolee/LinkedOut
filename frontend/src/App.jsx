@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import UserContext from "./context/user";
 import Login from "./components/Login";
 import Registration from "./components/Registration";
+import Applicant from "./components/Applicant";
 
 const queryClient = new QueryClient();
 
@@ -17,11 +18,12 @@ function App() {
       <UserContext.Provider
         value={{ accessToken, setAccessToken, role, setRole }}
       >
-        {!accessToken && showLogin && <Login setShowLogin={setShowLogin} />}
+        {/* {!accessToken && showLogin && <Login setShowLogin={setShowLogin} />}
         {!accessToken && !showLogin && (
           <Registration setShowLogin={setShowLogin}></Registration>
         )}
-        {accessToken && <Display />}
+        {accessToken && <Display />} */}
+        <Applicant></Applicant>
       </UserContext.Provider>
     </QueryClientProvider>
   );
